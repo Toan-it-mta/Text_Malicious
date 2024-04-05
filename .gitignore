@@ -3,7 +3,7 @@ datasets/*.pkl
 datasets/vectorizers/*.pkl
 models/.locks
 models/log-train/*.pkl
-models/vncorenlp
+models/vncorenlp/models
 models/vncorenlp/VnCoreNLP-1.2.jar
 vocabs/vocab.txt
 models/models--vinai--bartpho-word-base

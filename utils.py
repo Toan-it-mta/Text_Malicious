@@ -12,7 +12,15 @@ def compute_metrics_f_score(predictions, labels):
     return {"f1_score": float(score)}
 
 def compute_metrics(predictions, labels):
-    # Tính toán và trả về độ đo hiệu suất từ nhiều hàm tính toán độ đo riêng lẻ
+    """## Tính toán các thang đo
+
+    ### Args:
+        - `predictions (_type_)`: Đầu ra mô hình dự đoán
+        - `labels (_type_)`: Nhãn chính xác
+
+    ### Returns:
+        - 'score': Hai điểm accuracy và f-1_score
+    """
     metric_results = {}
     for metric_function in [compute_metrics_acc_score, compute_metrics_f_score]:
         metric_results.update(metric_function(predictions, labels))
