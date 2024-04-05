@@ -13,10 +13,6 @@ Sử dụng các phương pháp trích xuất đặc trưng và các thuật to�
 
     `$ pip install -r requirements.txt` 
 
-### Hướng dẫn sử dụng với từng Usecase
-* Sinh từ điển
-
-
 ### Chuẩn bị dữ liệu
 
 * Dữ liệu huấn luyện được tổ chức như sau:
