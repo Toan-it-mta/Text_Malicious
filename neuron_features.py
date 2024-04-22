@@ -3,6 +3,7 @@ from transformers import AutoModel, AutoTokenizer
 import pandas as pd
 import py_vncorenlp
 import os
+import json
 
 class NeuronFeatures:
     """## Thực hiện trích xuất các đặc trưng sử dụng mạng Nơ-ron học sâu
@@ -65,7 +66,7 @@ class NeuronFeatures:
         if path_vector_save is None:
             path_vector_save = f"{path_file_csv.split('.')[0]}_{feature_name.replace('/','_')}.pkl"
         df.to_pickle(path_vector_save)
-        return df
+        return json.loads(df.to_json(orient="records"))
 
 if __name__ == "__main__":
     neuronfeature = NeuronFeatures()

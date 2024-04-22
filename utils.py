@@ -30,7 +30,7 @@ def preprocessing_text(text):
     text = re.sub("\r", "\n", text)
     text = re.sub("\n{2,}", "\n", text)
     text = re.sub("…", ".", text)
-    text = re.sub("\.{2,}", ".", text)
+    text = re.sub("/.{2,}", ".", text)
     text = text.strip()
     text = text.lower()
     return text

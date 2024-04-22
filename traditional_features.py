@@ -3,6 +3,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import pickle
 import os
+import json
 
 class TraditionalFeatures:
     """
@@ -133,7 +134,7 @@ class TraditionalFeatures:
                 path_vector_save = f"{path_file_csv.split('.')[0]}_{feature_name}.pkl"
                 
             df.to_pickle(path_vector_save)
-            return df
+            return json.loads(df.to_json(orient="records"))
         except Exception as e:
             print("Error: ", e)
 
@@ -142,5 +143,4 @@ class TraditionalFeatures:
 #     traditionalfeature = TraditionalFeatures(path_file_stopwords='stopwords.txt')
 #     traditionalfeature.load_vocab_from_file(path_vocab_file='vocabs/vocab.txt')
 #     #Thực hiện trích xuất đặc trưng
-#     df = traditionalfeature.get_features(path_file_csv='datasets/train.csv')
-    
+#     result = traditionalfeature.get_features(path_file_csv='datasets/train.csv')
