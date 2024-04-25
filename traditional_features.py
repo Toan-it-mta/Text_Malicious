@@ -4,6 +4,8 @@ import pandas as pd
 import pickle
 import os
 import json
+from utils import visual_embedding
+import numpy as np
 
 class TraditionalFeatures:
     """
@@ -134,13 +136,17 @@ class TraditionalFeatures:
                 path_vector_save = f"{path_file_csv.split('.')[0]}_{feature_name}.pkl"
                 
             df.to_pickle(path_vector_save)
-            return json.loads(df.to_json(orient="records"))
+            embedings = df[feature_name].to_numpy()
+            words = [None] * len(embedings)
+            embedings = np.stack(embedings)
+            path_file_sentences_visual = visual_embedding(embedings, words)
+            return json.loads(df.to_json(orient="records")), path_file_sentences_visual
         except Exception as e:
             print("Error: ", e)
 
-# if __name__ == "__main__":
-#     #Khởi tạo phương thức trích xuất đặc trưng văn bản theo bộ từ điển đã có
-#     traditionalfeature = TraditionalFeatures(path_file_stopwords='stopwords.txt')
-#     traditionalfeature.load_vocab_from_file(path_vocab_file='vocabs/vocab.txt')
-#     #Thực hiện trích xuất đặc trưng
-#     result = traditionalfeature.get_features(path_file_csv='datasets/train.csv')
+if __name__ == "__main__":
+    #Khởi tạo phương thức trích xuất đặc trưng văn bản theo bộ từ điển đã có
+    traditionalfeature = TraditionalFeatures(path_file_stopwords='stopwords.txt')
+    traditionalfeature.load_vocab_from_file(path_vocab_file='vocabs/vocab.txt')
+    #Thực hiện trích xuất đặc trưng
+    result, path = traditionalfeature.get_features(path_file_csv='datasets/train.csv')

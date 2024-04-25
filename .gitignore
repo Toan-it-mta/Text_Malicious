@@ -8,3 +8,5 @@ models/vncorenlp/VnCoreNLP-1.2.jar
 vocabs/vocab.txt
 models/models--vinai--bartpho-word-base
 models/models--vinai--phobert-base
+models/models--vinai--bartpho-word
+images/*.png

@@ -53,14 +53,14 @@ async def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_trai
         traditionalfeature = TraditionalFeatures(path_file_stopwords=path_file_stop_words)
         if path_file_vocab is not None:
             traditionalfeature.load_vocab_from_file(path_file_vocab)
-        result = traditionalfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name, 
+        result, _ = traditionalfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name, 
                                                    path_vectorizer_save=path_vectorizer_save)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
         X, y = df_train[feature_name].to_list(), df_train['label'].to_list()
     else:
         neuronfeature = NeuronFeatures()
-        result = neuronfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name)
+        result, _ = neuronfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
         X, y = df_train["sentence_vector"].to_list(), df_train['label'].to_list()
