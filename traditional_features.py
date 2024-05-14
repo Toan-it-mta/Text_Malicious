@@ -4,7 +4,7 @@ import pandas as pd
 import pickle
 import os
 import json
-from utils import visual_embedding
+from utils import visual_embedding, array2string
 import numpy as np
 
 class TraditionalFeatures:
@@ -92,7 +92,7 @@ class TraditionalFeatures:
             self.vocab.reomve(word)
     
     def get_features( self, path_file_csv:str='datasets/train.csv', feature_name:str='count-vectorizing',
-                    path_vector_save:str=None, path_vectorizer_save:str=None):
+                    path_vector_save:str=None, path_vectorizer_save:str=None, number_samples_logs:int=10):
         """## Trích xuất đặc trưng truyền thống. Cần thực hiện load Vocab trước nếu không sẽ tự động sinh Vocab theo kho dữ liệu
 
         ### Args:
@@ -140,13 +140,17 @@ class TraditionalFeatures:
             words = [None] * len(embedings)
             embedings = np.stack(embedings)
             path_file_sentences_visual = visual_embedding(embedings, words)
-            return json.loads(df.to_json(orient="records")), path_file_sentences_visual
+            _df = df[:number_samples_logs]
+            _df['arr2str'] = _df[feature_name].apply(array2string)
+            del _df[feature_name]
+            return json.loads(_df.to_json(orient="records")), path_file_sentences_visual
         except Exception as e:
             print("Error: ", e)
 
-if __name__ == "__main__":
-    #Khởi tạo phương thức trích xuất đặc trưng văn bản theo bộ từ điển đã có
-    traditionalfeature = TraditionalFeatures(path_file_stopwords='stopwords.txt')
-    traditionalfeature.load_vocab_from_file(path_vocab_file='vocabs/vocab.txt')
-    #Thực hiện trích xuất đặc trưng
-    result, path = traditionalfeature.get_features(path_file_csv='datasets/train.csv')
+# if __name__ == "__main__":
+#     #Khởi tạo phương thức trích xuất đặc trưng văn bản theo bộ từ điển đã có
+#     traditionalfeature = TraditionalFeatures(path_file_stopwords='stopwords.txt')
+#     traditionalfeature.load_vocab_from_file(path_vocab_file='vocabs/vocab.txt')
+#     #Thực hiện trích xuất đặc trưng
+#     result, path = traditionalfeature.get_features(path_file_csv='datasets/train.csv', feature_name='tf-idf')
+#     print(result)

@@ -6,6 +6,29 @@ from sklearn.decomposition import PCA
 from datetime import datetime
 import os
 
+def array2string(array, words=False):
+    if words:
+        words_embedding = []
+        for i in array:
+            output = np.array2string(i, separator=',', max_line_width=np.inf)
+            clean_str = output.strip("'[]'")
+            # Tách chuỗi thành các phần tử
+            elements = clean_str.split(',')
+            # Chuyển các phần tử thành số thực và lưu vào danh sách
+            result = [element.strip() for element in elements]
+            words_embedding.append(result)
+        return words_embedding
+    
+    output = np.array2string(array, separator=',', max_line_width=np.inf)
+    # Loại bỏ dấu ngoặc và dấu nháy đơn
+    clean_str = output.strip("'[]'")
+    # Tách chuỗi thành các phần tử
+    elements = clean_str.split(',')
+    # Chuyển các phần tử thành số thực và lưu vào danh sách
+    result = [element.strip() for element in elements]
+    return result
+
+
 def compute_metrics_acc_score(predictions, labels):
     score = accuracy_score(labels, predictions)
     return {'accuracy': float(score)}
