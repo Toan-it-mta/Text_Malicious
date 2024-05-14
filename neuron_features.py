@@ -97,7 +97,7 @@ class NeuronFeatures:
         # path_file_sentences_visual = visual_embedding(words_embedings, words)
         # return json.loads(df.to_json(orient="records")), path_file_sentences_visual, path_file_sentences_visual
 
-# if __name__ == "__main__":
-#     neuronfeature = NeuronFeatures()
-#     result, path = neuronfeature.get_features()
-#     print(result)
+if __name__ == "__main__":
+    neuronfeature = NeuronFeatures()
+    result, path = neuronfeature.get_features()
+    print(result)
