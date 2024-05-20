@@ -5,27 +5,27 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from datetime import datetime
 import os
+def _array2string(array, pre_num=3, suf_num=3):
+    pre_ = array[:pre_num].tolist()
+    suf_ = array[-suf_num:].tolist()
+    output = []
+    for i in pre_:
+        output.append(str(i))
+    output.append("...")
+    for i in suf_:
+        output.append(str(i))
+    return output
 
-def array2string(array, words=False):
+def array2string(array, words=False, pre_num=3, suf_num=3):
+    _array2string(array)
     if words:
         words_embedding = []
         for i in array:
-            output = np.array2string(i, separator=',', max_line_width=np.inf)
-            clean_str = output.strip("'[]'")
-            # Tách chuỗi thành các phần tử
-            elements = clean_str.split(',')
-            # Chuyển các phần tử thành số thực và lưu vào danh sách
-            result = [element.strip() for element in elements]
-            words_embedding.append(result)
+            output = _array2string(i)
+            words_embedding.append(output)
         return words_embedding
     
-    output = np.array2string(array, separator=',', max_line_width=np.inf)
-    # Loại bỏ dấu ngoặc và dấu nháy đơn
-    clean_str = output.strip("'[]'")
-    # Tách chuỗi thành các phần tử
-    elements = clean_str.split(',')
-    # Chuyển các phần tử thành số thực và lưu vào danh sách
-    result = [element.strip() for element in elements]
+    result = _array2string(array, pre_num, suf_num)
     return result
 
 
