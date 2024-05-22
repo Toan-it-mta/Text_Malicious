@@ -68,20 +68,21 @@ class NeuronFeatures:
         tokenizer = AutoTokenizer.from_pretrained(feature_name, cache_dir='models')
         model = AutoModel.from_pretrained(feature_name, cache_dir='models').to(device)
         tqdm.pandas()
-        df[['words_vector', 'sentence_vector', 'tokens']] = df['text'].progress_apply(lambda x: self.get_embedding_from_text(x, tokenizer, model, number_words_per_sample_logs))
+        df[['words_vector', 'arr_sentence_vector', 'tokens']] = df['text'].progress_apply(lambda x: self.get_embedding_from_text(x, tokenizer, model, number_words_per_sample_logs))
         if path_vector_save is None:
             path_vector_save = f"{path_file_csv.split('.')[0]}_{feature_name.replace('/','_')}.pkl"
         df.to_pickle(path_vector_save)
 
         # Visual sentence embeddings
-        embedings = df["sentence_vector"].to_numpy()
+        embedings = df["arr_sentence_vector"].to_numpy()
         words = [None] * len(embedings)
         embedings = np.stack(embedings)
         path_file_sentences_visual = visual_embedding(embedings, words)
         
         # Convert Array to String for show
-        _df = df[:number_samples_logs]
-        _df['sentence_vector'] = _df['sentence_vector'].apply(array2string)
+        # _df = df[:number_samples_logs]
+        _df = df
+        _df['sentence_vector'] = _df['arr_sentence_vector'].apply(array2string)
         _df['words_vector'] = _df['words_vector'].apply(lambda x: array2string(x, True))
         return json.loads(_df.to_json(orient="records")), path_file_sentences_visual
     
