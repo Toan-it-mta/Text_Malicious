@@ -30,7 +30,7 @@ def create_knn_model(n_neighbors=5, **kargs):
     classifier = KNeighborsClassifier(n_neighbors=n_neighbors, **kargs)
     return classifier
     
-def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_train_csv:str='datasets/train.csv',
+async def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_train_csv:str='datasets/train.csv',
                 path_file_stop_words:str="stopwords.txt", val_size:float = 0.1,
                 path_file_vocab:str=None,  path_model_save:str=None,
                 path_vectorizer_save:str=None, **kargs):
@@ -92,7 +92,7 @@ def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_train_csv:
     }
     
 
-def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_csv:str='datasets/test.csv', path_vectorizer_save:str=None):
+async def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_csv:str='datasets/test.csv', path_vectorizer_save:str=None):
     """## Test các mô hình truyền thống với các đặc trưng cụ thể
 
     ### Args:
@@ -134,7 +134,7 @@ def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_csv:str=
         'test_f1': score['f1_score']
     }
 
-def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', path_vectorizer_save:str=None):
+async def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', path_vectorizer_save:str=None):
     """## Infer mô hình với đoạn text cụ thể
 
     ### Args:
@@ -166,8 +166,8 @@ def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', path_vect
     id = classifier.predict(embedding).tolist()[0]
     return id2label[id]
 
-if __name__ == "__main__":
-    print(train(model_name='navie-bayes', feature_name='tf-idf', path_file_train_csv="datasets/_train.csv"))
-    print(test(path_model="models/log-train/model_tf-idf_navie-bayes.pkl", feature_name='tf-idf', path_file_test_csv='datasets/test.csv'))
-    print(infer('models/log-train/model_tf-idf_navie-bayes.pkl', feature_name='tf-idf', 
-                      path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""đm thô nhưng thật vl"""'))
+# if __name__ == "__main__":
+#     print(train(model_name='navie-bayes', feature_name='vinai/phobert-base', path_file_train_csv="datasets/_train.csv"))
+#     print(test(path_model="models/log-train/model_vinai_phobert-base_navie-bayes.pkl", feature_name='vinai/phobert-base', path_file_test_csv='datasets/test.csv'))
+#     print(infer('models/log-train/model_vinai_phobert-base_navie-bayes.pkl', feature_name='vinai/phobert-base', 
+#                       path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""chào bạn"""'))
