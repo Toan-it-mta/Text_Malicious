@@ -68,7 +68,7 @@ class NeuronFeatures:
         tokenizer = AutoTokenizer.from_pretrained(feature_name, cache_dir='models')
         model = AutoModel.from_pretrained(feature_name, cache_dir='models').to(device)
         tqdm.pandas()
-        df[['words_vector', 'sentence_vector', 'tokens']] = df['text'].progress_apply(lambda x: self.get_embedding_from_text(x, tokenizer, model, number_words_per_sample_logs))
+        df[['words_vector', feature_name, 'tokens']] = df['text'].progress_apply(lambda x: self.get_embedding_from_text(x, tokenizer, model, number_words_per_sample_logs))
         if path_vector_save is None:
             path_vector_save = f"{path_file_csv.split('.')[0]}_{feature_name.replace('/','_')}.pkl"
         df.to_pickle(path_vector_save)
