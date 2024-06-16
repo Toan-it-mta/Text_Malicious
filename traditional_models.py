@@ -53,17 +53,19 @@ async def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_trai
         traditionalfeature = TraditionalFeatures(path_file_stopwords=path_file_stop_words)
         if path_file_vocab is not None:
             traditionalfeature.load_vocab_from_file(path_file_vocab)
-        result, _ = traditionalfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name, 
+        result, _, _ = traditionalfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name, 
                                                    path_vectorizer_save=path_vectorizer_save)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
         X, y = df_train[feature_name].to_list(), df_train['label'].to_list()
+        print(len(X))
     else:
         neuronfeature = NeuronFeatures()
-        result, _ = neuronfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name)
+        result, _, _ = neuronfeature.get_features(path_file_csv=path_file_train_csv, feature_name=feature_name)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
-        X, y = df_train["sentence_vector"].to_list(), df_train['label'].to_list()
+        X, y = df_train["arr_sentence_vector"].to_list(), df_train['label'].to_list()
+        print(len(X))
         
     X_train, X_val, y_train, y_val = train_test_split( X, y, test_size=val_size, random_state=42)
     
@@ -110,7 +112,7 @@ async def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_cs
             path_vectorizer_save = os.path.join(os.path.sep.join(path_file_test_csv.split(os.path.sep)[:-1]),
                                                 f'vectorizers/{feature_name}-vectorizer.pkl')
         
-        result = traditionalfeature.get_features(path_file_csv=path_file_test_csv, feature_name=feature_name, 
+        result, _, _ = traditionalfeature.get_features(path_file_csv=path_file_test_csv, feature_name=feature_name, 
                                                    path_vectorizer_save=path_vectorizer_save)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
@@ -118,10 +120,10 @@ async def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_cs
         
     else:
         neuronfeature = NeuronFeatures()
-        result = neuronfeature.get_features(path_file_csv=path_file_test_csv, feature_name=feature_name)
+        result, _, _ = neuronfeature.get_features(path_file_csv=path_file_test_csv, feature_name=feature_name)
         str_result = json.dumps(result)
         df_train = pd.read_json(path_or_buf=str_result, orient='records')
-        X, y = df_train["sentence_vector"].to_list(), df_train['label'].to_list()
+        X, y = df_train["arr_sentence_vector"].to_list(), df_train['label'].to_list()
         
     with open(path_model, 'rb') as f:
         classifier = pickle.load(f)
@@ -158,7 +160,7 @@ async def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', pat
         tokenizer = AutoTokenizer.from_pretrained(feature_name, cache_dir='models')
         model = AutoModel.from_pretrained(feature_name, cache_dir='models').to(device)
         neuronfeature = NeuronFeatures()
-        embedding = neuronfeature.get_embedding_from_text(text=text, tokenizer=tokenizer, model=model)[1].reshape(1, -1)
+        embedding = neuronfeature.get_embedding_from_text(text=text, tokenizer=tokenizer, model=model, number_words_per_sample_logs= 1)[1].reshape(1, -1)
     
     with open(path_model, 'rb') as f:
         classifier = pickle.load(f)
@@ -167,8 +169,7 @@ async def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', pat
     return id2label[id]
 
 # if __name__ == "__main__":
-    # print(train(model_name='navie-bayes', feature_name='vinai/phobert-base'))
-    # print(test(path_model='models/log-train/model_vinai_phobert-base_navie-bayes.pkl', 
-    #                  feature_name='vinai/phobert-base', path_file_test_csv='datasets/test.csv'))
+    # print(train(model_name='navie-bayes', feature_name='tf-idf', path_file_train_csv="datasets/_train.csv"))
+    # print(test(path_model="models/log-train/model_vinai_phobert-base_navie-bayes.pkl", feature_name='vinai/phobert-base', path_file_test_csv='datasets/test.csv'))
     # print(infer('models/log-train/model_vinai_phobert-base_navie-bayes.pkl', feature_name='vinai/phobert-base', 
-    #                   path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""đm thô nhưng thật vl"""'))
+    #                   path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""chào bạn"""'))

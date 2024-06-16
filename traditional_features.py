@@ -140,9 +140,10 @@ class TraditionalFeatures:
             words = [None] * len(embedings)
             embedings = np.stack(embedings)
             path_file_sentences_visual = visual_embedding(embedings, words)
-            _df = df[:number_samples_logs]
+            _df = df
             _df['sentence_vector'] = _df[feature_name].apply(array2string)
-            return json.loads(_df.to_json(orient="records")), path_file_sentences_visual
+            _df_to_show = _df[:number_samples_logs]
+            return json.loads(_df.to_json(orient="records")), path_file_sentences_visual, json.loads(_df_to_show.to_json(orient="records"))
         except Exception as e:
             print("Error: ", e)
 
