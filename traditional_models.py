@@ -30,7 +30,7 @@ def create_knn_model(n_neighbors=5, **kargs):
     classifier = KNeighborsClassifier(n_neighbors=n_neighbors, **kargs)
     return classifier
     
-async def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_train_csv:str='datasets/train.csv',
+def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_train_csv:str='datasets/train.csv',
                 path_file_stop_words:str="stopwords.txt", val_size:float = 0.1,
                 path_file_vocab:str=None,  path_model_save:str=None,
                 path_vectorizer_save:str=None, **kargs):
@@ -94,7 +94,7 @@ async def train(model_name:str='k-nn', feature_name:str='tf-idf', path_file_trai
     }
     
 
-async def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_csv:str='datasets/test.csv', path_vectorizer_save:str=None):
+def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_csv:str='datasets/test.csv', path_vectorizer_save:str=None):
     """## Test các mô hình truyền thống với các đặc trưng cụ thể
 
     ### Args:
@@ -136,7 +136,7 @@ async def test(path_model:str=None, feature_name:str='tf-idf', path_file_test_cs
         'test_f1': score['f1_score']
     }
 
-async def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', path_vectorizer_save:str=None):
+def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', path_vectorizer_save:str=None):
     """## Infer mô hình với đoạn text cụ thể
 
     ### Args:
@@ -164,12 +164,26 @@ async def infer(path_model:str=None, feature_name:str='tf-idf', text:str='', pat
     
     with open(path_model, 'rb') as f:
         classifier = pickle.load(f)
-    
+     
     id = classifier.predict(embedding).tolist()[0]
-    return id2label[id]
+    label = id2label[id]
 
-# if __name__ == "__main__":
+    #Lấy tên của mô hình
+    model_name = path_model.split(os.path.sep)[-1].split('.')[0]
+    file_kiemthu = os.path.join("kiemthu", model_name+'.csv')
+
+    if not os.path.exists(file_kiemthu):
+        df = pd.DataFrame(columns=['text','predict'])
+    else:
+        df = pd.read_csv(file_kiemthu)
+
+    df.loc[len(df.index)] = [text, label]
+    df.to_csv(file_kiemthu, index=False)
+
+    return label, file_kiemthu
+
+if __name__ == "__main__":
     # print(train(model_name='navie-bayes', feature_name='tf-idf', path_file_train_csv="datasets/_train.csv"))
     # print(test(path_model="models/log-train/model_vinai_phobert-base_navie-bayes.pkl", feature_name='vinai/phobert-base', path_file_test_csv='datasets/test.csv'))
-    # print(infer('models/log-train/model_vinai_phobert-base_navie-bayes.pkl', feature_name='vinai/phobert-base', 
-    #                   path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""chào bạn"""'))
+    print(infer('models/log-train/model_vinai_phobert-base_navie-bayes.pkl', feature_name='vinai/phobert-base', 
+                      path_vectorizer_save='datasets/vectorizers/tf-idf-vectorizer.pkl', text='"""Đụ má chán ghê"""'))
